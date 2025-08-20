@@ -52,7 +52,7 @@ Antes de executar o projeto, certifique-se de ter instalado:
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/eda-app.git
+git clone https://github.com/eduardoml93/python-flet-App-EDA.git
 cd eda-app
 ```
 
@@ -138,68 +138,12 @@ eda-app/
     └── pyvenv.cfg
 ```
 
-## 🚀 Funcionalidades Futuras
-
-- [ ] **Upload de arquivos locais**
-- [ ] **Gráficos interativos** com Plotly
-- [ ] **Exportação de relatórios** em PDF/HTML
-- [ ] **Múltiplos formatos** de arquivo (Excel, JSON)
-- [ ] **Análise de correlação** entre variáveis
-- [ ] **Detecção automática** de outliers
-- [ ] **Temas personalizáveis** (claro/escuro)
-- [ ] **Histórico de análises**
-
-## 🤝 Contribuindo
-
-Contribuições são sempre bem-vindas! Para contribuir:
-
-1. **Fork** o projeto
-2. Crie uma **branch** para sua feature (`git checkout -b feature/AmazingFeature`)
-3. **Commit** suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um **Pull Request**
-
-### 📝 Como Contribuir
-
-- 🐛 **Reportar bugs** através de Issues
-- 💡 **Sugerir novas funcionalidades**
-- 📚 **Melhorar a documentação**
-- 🔧 **Corrigir problemas de código**
-- 🎨 **Melhorar a interface**
-
-## 🐛 Problemas Conhecidos
-
-- **Arquivos muito grandes** podem demorar para carregar
-- **URLs com autenticação** não são suportadas
-- **Arquivos com encoding especial** podem ter problemas de leitura
-
 ## 📄 Licença
 
 Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
-## 👨‍💻 Autor
 
-**Seu Nome**
-- GitHub: [@seu-usuario](https://github.com/seu-usuario)
-- LinkedIn: [Seu Nome](https://linkedin.com/in/seu-perfil)
-- Email: seu-email@exemplo.com
-
-## 🙏 Agradecimentos
-
-- **Flet Team** pelo framework incrível
-- **Pandas Team** pela biblioteca de análise de dados
-- **Comunidade Python** pelo suporte contínuo
-- **Contribuidores** que ajudaram a melhorar este projeto
-
-## 📊 Estatísticas do Projeto
-
-![GitHub stars](https://img.shields.io/github/stars/seu-usuario/eda-app)
-![GitHub forks](https://img.shields.io/github/forks/seu-usuario/eda-app)
-![GitHub issues](https://img.shields.io/github/issues/seu-usuario/eda-app)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/seu-usuario/eda-app)
-
----
 
 ⭐ **Se este projeto te ajudou, considere dar uma estrela no GitHub!**
 
-**Made with ❤️ and ☕ by [Seu Nome]**
+**Made with ❤️ and ☕ by Eduardo ML**
