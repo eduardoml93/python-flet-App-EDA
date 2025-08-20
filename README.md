@@ -24,7 +24,7 @@ O **EDA App** é uma ferramenta desktop que permite aos usuários realizar anál
 ## 🖼️ Screenshots
 
 ### Interface Principal
-![Interface Principal](teste.png)
+![Interface Principal](tela.jpg)
 
 ## 🛠️ Tecnologias Utilizadas
 
