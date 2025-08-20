@@ -161,7 +161,7 @@ class EDAApp:
             
         except Exception as e:
             error_content = ft.Column([
-                ft.Icon(ft.icons.ERROR, color=ft.Colors.RED, size=48),
+                ft.Icon(ft.Icons.ERROR, color=ft.Colors.RED, size=48),
                 ft.Text(f"Erro ao analisar dados: {str(e)}", 
                        color=ft.Colors.RED, size=16, text_align=ft.TextAlign.CENTER),
             ], horizontal_alignment=ft.CrossAxisAlignment.CENTER)
@@ -171,11 +171,46 @@ class EDAApp:
             page.update()
     
     def create_analysis_content(self) -> ft.Column:
-        """Cria o conteúdo da análise"""
+        """Cria o conteúdo da análise com prévia automática das primeiras linhas"""
         if self.df is None:
             return ft.Text("Nenhum dado para analisar")
         
-        # Informações básicas
+        # --- Prévia dos dados (10 primeiras linhas) ---
+        preview_df = self.df.head(10)
+        
+        headers = [ft.Text(col, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_700) 
+                for col in preview_df.columns]
+        
+        rows = []
+        for _, row in preview_df.iterrows():
+            row_data = [ft.Text(str(val)[:50] + "..." if len(str(val)) > 50 else str(val), size=12) 
+                        for val in row]
+            rows.append(row_data)
+        
+        preview_table = ft.DataTable(
+            columns=[ft.DataColumn(header) for header in headers],
+            rows=[ft.DataRow(cells=[ft.DataCell(cell) for cell in row]) for row in rows],
+            border=ft.border.all(1, ft.Colors.GREY_300),
+            border_radius=10,
+        )
+        
+        preview_container = ft.Container(
+            content=ft.Column([
+                ft.Text("👁️ Prévia das 10 Primeiras Linhas", size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_800),
+                ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
+                ft.Column(
+                    [preview_table],
+                    scroll=ft.ScrollMode.AUTO,  # <-- substituindo SingleChildScrollView
+                    height=200,
+                )
+            ]),
+            padding=20,
+            border_radius=10,
+            bgcolor=ft.Colors.GREY_50,
+            border=ft.border.all(1, ft.Colors.BLUE_200)
+        )
+        
+        # --- Informações básicas ---
         basic_info = ft.Container(
             content=ft.Column([
                 ft.Text("📋 Informações Básicas", size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_700),
@@ -189,7 +224,7 @@ class EDAApp:
             border=ft.border.all(1, ft.Colors.BLUE_200),
         )
         
-        # Tipos de dados
+        # --- Tipos de dados ---
         dtype_info = ft.Container(
             content=ft.Column([
                 ft.Text("🔍 Tipos de Dados", size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_700),
@@ -201,7 +236,7 @@ class EDAApp:
             border=ft.border.all(1, ft.Colors.BLUE_200),
         )
         
-        # Estatísticas descritivas
+        # --- Estatísticas descritivas ---
         numeric_cols = self.df.select_dtypes(include=['number']).columns
         if len(numeric_cols) > 0:
             stats_df = self.df[numeric_cols].describe()
@@ -237,19 +272,18 @@ class EDAApp:
             )
         else:
             stats_container = ft.Container(
-                content=ft.Text("📈 Nenhuma coluna numérica encontrada para estatísticas", 
-                               color=ft.Colors.GREY_500),
+                content=ft.Text("📈 Nenhuma coluna numérica encontrada para estatísticas", color=ft.Colors.GREY_500),
                 padding=20,
                 border_radius=10,
                 bgcolor=ft.Colors.WHITE,
                 border=ft.border.all(1, ft.Colors.BLUE_200),
             )
         
-        # Valores únicos para colunas categóricas
+        # --- Colunas categóricas ---
         categorical_cols = self.df.select_dtypes(include=['object']).columns
         if len(categorical_cols) > 0:
             cat_content = []
-            for col in categorical_cols[:5]:  # Limita a 5 colunas para não sobrecarregar
+            for col in categorical_cols[:5]:
                 unique_vals = self.df[col].value_counts().head(10)
                 cat_content.append(
                     ft.Container(
@@ -278,23 +312,21 @@ class EDAApp:
             )
         else:
             categorical_container = ft.Container(
-                content=ft.Text("🏷️ Nenhuma coluna categórica encontrada", 
-                               color=ft.Colors.GREY_500),
+                content=ft.Text("🏷️ Nenhuma coluna categórica encontrada", color=ft.Colors.GREY_500),
                 padding=20,
                 border_radius=10,
                 bgcolor=ft.Colors.WHITE,
                 border=ft.border.all(1, ft.Colors.BLUE_200),
             )
         
-        # Valores nulos
+        # --- Valores nulos ---
         null_counts = self.df.isnull().sum()
         null_content = []
         for col, null_count in null_counts.items():
             if null_count > 0:
                 null_percent = (null_count / len(self.df)) * 100
                 null_content.append(
-                    ft.Text(f"• {col}: {null_count:,} ({null_percent:.1f}%)", 
-                           size=14, color=ft.Colors.ORANGE_700)
+                    ft.Text(f"• {col}: {null_count:,} ({null_percent:.1f}%)", size=14, color=ft.Colors.ORANGE_700)
                 )
         
         if null_content:
@@ -310,28 +342,19 @@ class EDAApp:
             )
         else:
             null_container = ft.Container(
-                content=ft.Text("✅ Nenhum valor nulo encontrado", 
-                               color=ft.Colors.GREEN_600, size=16),
+                content=ft.Text("✅ Nenhum valor nulo encontrado", color=ft.Colors.GREEN_600, size=16),
                 padding=20,
                 border_radius=10,
                 bgcolor=ft.Colors.GREEN_50,
                 border=ft.border.all(1, ft.Colors.GREEN_200),
             )
         
-        # Botão para visualizar primeiras linhas
-        view_data_button = ft.ElevatedButton(
-            "👁️ Visualizar Primeiras Linhas",
-            on_click=lambda e: self.show_data_preview(),
-            style=ft.ButtonStyle(
-                color=ft.Colors.WHITE,
-                bgcolor=ft.Colors.GREEN_600,
-                padding=15,
-            ),
-        )
-        
+        # --- Monta a coluna final ---
         return ft.Column([
-            ft.Text("📊 Resultados da Análise", size=24, weight=ft.FontWeight.BOLD, 
-                   color=ft.Colors.BLUE_800, text_align=ft.TextAlign.CENTER),
+            ft.Text("📊 Resultados da Análise", size=24, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_800, text_align=ft.TextAlign.CENTER),
+            ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
+            
+            preview_container,
             ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
             
             basic_info,
@@ -347,70 +370,7 @@ class EDAApp:
             ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
             
             null_container,
-            ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
-            
-            ft.Row([view_data_button], alignment=ft.MainAxisAlignment.CENTER),
         ], spacing=20)
-    
-    def show_data_preview(self):
-        """Mostra uma prévia dos dados"""
-        if self.df is None:
-            return
-        
-        # Cria uma nova página para mostrar os dados
-        preview_page = ft.Page()
-        preview_page.title = "Prévia dos Dados"
-        preview_page.window_width = 1000
-        preview_page.window_height = 600
-        
-        # Cabeçalho
-        header = ft.Text("👁️ Prévia dos Dados", size=24, weight=ft.FontWeight.BOLD, 
-                        color=ft.Colors.BLUE_800)
-        
-        # Tabela de dados (primeiras 20 linhas)
-        preview_df = self.df.head(20)
-        
-        # Cria cabeçalhos da tabela
-        headers = [ft.Text(col, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_700) 
-                  for col in preview_df.columns]
-        
-        # Cria linhas da tabela
-        rows = []
-        for _, row in preview_df.iterrows():
-            row_data = [ft.Text(str(val)[:50] + "..." if len(str(val)) > 50 else str(val), 
-                               size=12) for val in row]
-            rows.append(row_data)
-        
-        # Tabela
-        data_table = ft.DataTable(
-            columns=[ft.DataColumn(header) for header in headers],
-            rows=[ft.DataRow(cells=[ft.DataCell(cell) for cell in row]) for row in rows],
-            border=ft.border.all(1, ft.Colors.GREY_300),
-            border_radius=10,
-        )
-        
-        # Botão de fechar
-        close_button = ft.ElevatedButton(
-            "❌ Fechar",
-            on_click=lambda e: preview_page.window_destroy(),
-            style=ft.ButtonStyle(
-                color=ft.Colors.WHITE,
-                bgcolor=ft.Colors.RED_600,
-                padding=15,
-            ),
-        )
-        
-        preview_page.add(
-            ft.Column([
-                header,
-                ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
-                data_table,
-                ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
-                ft.Row([close_button], alignment=ft.MainAxisAlignment.CENTER),
-            ], spacing=20)
-        )
-        
-        preview_page.window_visible = True
 
 def main(page: ft.Page):
     app = EDAApp()
