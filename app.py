@@ -201,7 +201,7 @@ class EDAApp:
                 ft.Column(
                     [preview_table],
                     scroll=ft.ScrollMode.AUTO,  # <-- substituindo SingleChildScrollView
-                    height=200,
+                    height=550,
                 )
             ]),
             padding=20,
